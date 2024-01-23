@@ -6,7 +6,7 @@ import org.junit.Assert.*
 
 
 class GamePlayUnitTest {
-    
+
     @Test
     fun assure_2_bots_play_with_different_colors() {
         assertTrue(false)
