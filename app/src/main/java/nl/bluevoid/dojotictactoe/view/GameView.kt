@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import nl.bluevoid.dojotictactoe.model.Board
 import nl.bluevoid.dojotictactoe.model.BoardCell
 import nl.bluevoid.dojotictactoe.model.CellState
@@ -40,28 +41,29 @@ fun GameView(game: Game) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = Modifier.fillMaxWidth()) {
 
-        Text("Tic tact toe")
-
-        val stateText = when (gameState) {
-            Board.GameState.Undecided -> "Undecided"
-            Board.GameState.WinCircle -> "Circle wins!"
-            Board.GameState.WinCross -> "Cross wins!"
-            Board.GameState.Draw -> "Its a draw!"
-        }
-        Text(stateText)
+        Text("Tic-tac-toe", fontSize = 30.sp)
 
         BoxWithConstraints {
             Board(count, cellRows, this.maxWidth)
         }
+        val stateText = when (gameState) {
+            Board.GameState.Undecided -> ""
+            Board.GameState.WinCircle -> "Circle wins!"
+            Board.GameState.WinCross -> "Cross wins!"
+            Board.GameState.Draw -> "It's a draw!"
+        }
+        Text(stateText, fontSize = 30.sp)
 
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            repeat(3) {
-                val size = 3 + it
-                Button({ game.restart(size) }) {
-                    Text("Start $size")
+        if (gameState != Board.GameState.Undecided) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                repeat(3) {
+                    val size = 3 + it
+                    Button({ game.restart(size) }) {
+                        Text("Start $size")
+                    }
                 }
             }
         }

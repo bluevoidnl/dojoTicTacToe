@@ -36,4 +36,3 @@ class Game(val stepTime: Long = 600L) : ViewModel() {
         run()
     }
 }
-

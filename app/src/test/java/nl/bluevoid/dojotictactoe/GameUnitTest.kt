@@ -52,10 +52,13 @@ class GameUnitTest {
     @Test
     fun assure_game_can_be_restarted() {
         runTest {
+            // create game and let it make moves
             val game = Game(0L)
             assertEquals(3, game.boardFlow.value.size)
             game.run()
+            delay(50)
 
+            // restart and run till end
             game.restart(4)
             assertEquals(4, game.boardFlow.value.size)
             game.run()
