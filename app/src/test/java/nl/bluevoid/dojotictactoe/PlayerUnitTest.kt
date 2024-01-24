@@ -2,20 +2,20 @@ package nl.bluevoid.dojotictactoe
 
 import nl.bluevoid.dojotictactoe.model.Board
 import nl.bluevoid.dojotictactoe.model.Bot
+import nl.bluevoid.dojotictactoe.model.CellState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
-
 
 class PlayerUnitTest {
     @Test
     fun assure_bot_plays_allowed_move() {
         val board = Board()
-        val p1 = Bot(Board.CellState.Cross)
+        val p1 = Bot(CellState.Cross)
         p1.doMove(board)
 
         assertEquals(1, board.getNrMovesDone(p1.color))
-        assertEquals(0, board.getNrMovesDone(Board.CellState.Circle))
+        assertEquals(0, board.getNrMovesDone(CellState.Circle))
     }
 
     @Test
