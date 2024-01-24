@@ -57,7 +57,7 @@ fun GameView(game: Game) {
             Board(count, cellRows, this.maxWidth)
         }
 
-        Row() {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             repeat(3) {
                 val size = 3 + it
                 Button({ game.restart(size) }) {
