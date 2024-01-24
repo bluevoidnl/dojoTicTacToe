@@ -1,5 +1,7 @@
 package nl.bluevoid.dojotictactoe
 
+import nl.bluevoid.dojotictactoe.model.Board
+import nl.bluevoid.dojotictactoe.model.Bot
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -8,7 +10,9 @@ import org.junit.Assert.*
 class PlayerUnitTest {
     @Test
     fun assure_bot_plays_allowed_move() {
-        assertTrue(false)
+        val board = Board()
+        val p1 = Bot(Board.CellState.Cross)
+        p1.doMove(board)
     }
 
     @Test

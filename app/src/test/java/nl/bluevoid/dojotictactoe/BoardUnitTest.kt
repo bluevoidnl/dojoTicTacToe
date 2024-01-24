@@ -23,10 +23,8 @@ class BoardUnitTest {
     @Test
     fun assure_board_is_empty_at_start() {
         val board = Board()
-        val cells = board.boardFlow.value.flatten()
-        cells.forEach {
-            assertEquals(Board.CellState.Empty, it)
-        }
+        val emptyCells = board.getEmptyCells().distinct()
+        assertEquals(board.size * board.size, emptyCells.size)
     }
 
     @Test
@@ -35,12 +33,15 @@ class BoardUnitTest {
 
         // first move
         board.setCell(1, 1, Board.CellState.Cross)
-        assertEquals(board.boardFlow.value[1][1], Board.CellState.Cross)
+        assertEquals(board.boardFlow.value[1][1].state, Board.CellState.Cross)
 
         // second move
         board.setCell(2, 2, Board.CellState.Circle)
-        assertEquals(board.boardFlow.value[1][1], Board.CellState.Cross)
-        assertEquals(board.boardFlow.value[2][2], Board.CellState.Circle)
+        assertEquals(board.boardFlow.value[1][1].state, Board.CellState.Cross)
+        assertEquals(board.boardFlow.value[2][2].state, Board.CellState.Circle)
+
+        assertEquals(1, board.getNrMovesDone(Board.CellState.Cross))
+        assertEquals(1, board.getNrMovesDone(Board.CellState.Circle))
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -136,8 +137,8 @@ class BoardUnitTest {
         board.setCell(1, 2, Board.CellState.Circle)
         val boardState = board.boardFlow.value
         boardState.forEachIndexed { y, row ->
-            row.forEachIndexed { x, state ->
-                if (state == Board.CellState.Empty) {
+            row.forEachIndexed { x, cell ->
+                if (cell.state == Board.CellState.Empty) {
                     board.setCell(x, y, Board.CellState.Cross)
                 }
             }
