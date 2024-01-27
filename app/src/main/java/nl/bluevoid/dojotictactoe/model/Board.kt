@@ -2,13 +2,19 @@ package nl.bluevoid.dojotictactoe.model
 
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class Board(val size: Int = 3) {
+class Board private constructor(
+    val size: Int,
+    val mutable: Boolean,
+    private val boardRows: List<List<BoardCell>>
+) {
+
+    constructor(size: Int = 3, mutable: Boolean = false) : this(
+        size,
+        mutable,
+        List(size) { y -> List(size) { x -> BoardCell(x, y) } }
+    )
 
     enum class GameState { Undecided, WinCross, WinCircle, Draw }
-
-    private val boardRows: MutableList<MutableList<BoardCell>> = MutableList(size) { y ->
-        MutableList(size) { x -> BoardCell(x, y) }
-    }
 
     val boardFlow = MutableStateFlow<List<List<BoardCell>>>(boardRows)
 
@@ -25,7 +31,15 @@ class Board(val size: Int = 3) {
         moveCounterFlow.value = moveCounterFlow.value + 1
     }
 
-    fun deepCopyBoard() = boardRows.map { row -> row.map { cell -> cell.copy() } }
+    fun undoMove(x: Int, y: Int) {
+        setCell(x, y, CellState.Empty)
+    }
+
+    fun getMutableCopy(): Board {
+        return Board(size, mutable = true, deepCopyBoard())
+    }
+
+    private fun deepCopyBoard() = boardRows.map { row -> row.map { cell -> cell.copy() } }
 
     fun getNrMovesDone(state: CellState) = boardRows.flatten().count { it.state == state }
 
@@ -41,11 +55,13 @@ class Board(val size: Int = 3) {
         if (x < 0 || y < 0 || x >= size || y >= size) {
             throw IllegalArgumentException("cell is not in bounds 0..$size: $x, $y")
         }
-        if (boardRows[y][x].state != CellState.Empty) {
-            throw IllegalArgumentException("cell  $x, $y is not empty")
-        }
-        if (state == CellState.Empty) {
-            throw IllegalArgumentException("can not set cell to empty")
+        if (!mutable) {
+            if (boardRows[y][x].state != CellState.Empty) {
+                throw IllegalArgumentException("cell  $x, $y is not empty")
+            }
+            if (state == CellState.Empty) {
+                throw IllegalArgumentException("can not set cell to empty")
+            }
         }
     }
 

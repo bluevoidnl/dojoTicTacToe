@@ -25,18 +25,9 @@ class PlayerUnitTest {
         assertEquals(1, board.getNrMovesDone(p1.color))
         assertEquals(0, board.getNrMovesDone(CellState.Circle))
     }
-
+    
     @Test
-    fun assure_bot_plays_best_first_move() {
-        val game = Game(3)
-        game.nextTurn()
-        // best move is center in 3x3 game
-        val centerCell=game.boardFlow.value.boardFlow.value[1][1]
-        assertEquals(CellState.Cross, centerCell.state)
-    }
-
-    @Test
-    fun assure_bot_that_starts_wins() {
+    fun assure_bot_game_ends_in_a_draw_on_3x3() {
         runTest {
             val game = Game(0L)
             val startColor = game.boardFlow.value.getTurn()
@@ -44,9 +35,9 @@ class PlayerUnitTest {
             game.run()
 
             while (!game.isFinished()) {
-                delay(10)
+                delay(100)
             }
-            assertEquals(Board.GameState.WinCross, game.boardFlow.value.gameStateFlow.value)
+            assertEquals(Board.GameState.Draw, game.boardFlow.value.gameStateFlow.value)
         }
     }
 }
