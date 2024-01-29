@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > Game</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.bluevoid.dojotictactoe.model</a>
+</div>
+
+<h1>Coverage Summary for Class: Game (nl.bluevoid.dojotictactoe.model)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Game</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Game$run$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83,3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93,8%
+  </span>
+  <span class="absValue">
+    (15/16)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.bluevoid.dojotictactoe.model
+&nbsp;
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.lifecycle.viewModelScope
+&nbsp;import kotlinx.coroutines.Job
+&nbsp;import kotlinx.coroutines.delay
+&nbsp;import kotlinx.coroutines.flow.MutableStateFlow
+&nbsp;import kotlinx.coroutines.launch
+&nbsp;import kotlinx.datetime.Clock
+&nbsp;
+<b class="fc">&nbsp;class Game(val stepTime: Long = 600L) : ViewModel() {</b>
+&nbsp;
+<b class="fc">&nbsp;    val boardFlow = MutableStateFlow(Board())</b>
+<b class="fc">&nbsp;    val players = listOf(Bot(CellState.Cross), Bot(CellState.Circle))</b>
+&nbsp;
+&nbsp;    private var gameJob: Job? = null
+&nbsp;
+&nbsp;    fun run() {
+<b class="fc">&nbsp;        gameJob?.cancel()</b>
+<b class="fc">&nbsp;        gameJob = viewModelScope.launch {</b>
+<b class="fc">&nbsp;            while (boardFlow.value.gameStateFlow.value == Board.GameState.Undecided) {</b>
+<b class="fc">&nbsp;                val start = Clock.System.now()</b>
+<b class="fc">&nbsp;                nextTurn()</b>
+&nbsp;
+&nbsp;                // keep at least x time between moves
+<b class="fc">&nbsp;                val duration = Clock.System.now().minus(start).inWholeMilliseconds</b>
+<b class="fc">&nbsp;                if (duration &lt; stepTime)</b>
+<b class="nc">&nbsp;                    delay(stepTime - duration)</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    fun isFinished() = boardFlow.value.gameStateFlow.value != Board.GameState.Undecided</b>
+&nbsp;
+&nbsp;    suspend fun nextTurn() {
+<b class="fc">&nbsp;        val colorToPlay = boardFlow.value.getTurn()</b>
+<b class="fc">&nbsp;        players.first { it.color == colorToPlay }.doMove(boardFlow.value)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun restart(boardSize: Int) {
+<b class="fc">&nbsp;        boardFlow.value = Board(boardSize)</b>
+<b class="fc">&nbsp;        run()</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-01-29 10:06</div>
+</div>
+</body>
+</html>

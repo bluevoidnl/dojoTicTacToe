@@ -1,0 +1,295 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GameViewKt</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">nl.bluevoid.dojotictactoe.view</a>
+</div>
+
+<h1>Coverage Summary for Class: GameViewKt (nl.bluevoid.dojotictactoe.view)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameViewKt</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/206)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GameViewKt$Board$2</td>
+  </tr>
+  <tr>
+    <td class="name">GameViewKt$Cell$1</td>
+  </tr>
+  <tr>
+    <td class="name">GameViewKt$GameView$1$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GameViewKt$GameView$1$2$1$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GameViewKt$GameView$1$2$1$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GameViewKt$GameView$2</td>
+  </tr>
+  <tr>
+    <td class="name">GameViewKt$WhenMappings</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/209)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package nl.bluevoid.dojotictactoe.view
+&nbsp;
+&nbsp;import androidx.compose.foundation.background
+&nbsp;import androidx.compose.foundation.layout.Arrangement
+&nbsp;import androidx.compose.foundation.layout.Box
+&nbsp;import androidx.compose.foundation.layout.BoxWithConstraints
+&nbsp;import androidx.compose.foundation.layout.Column
+&nbsp;import androidx.compose.foundation.layout.Row
+&nbsp;import androidx.compose.foundation.layout.fillMaxWidth
+&nbsp;import androidx.compose.foundation.layout.height
+&nbsp;import androidx.compose.foundation.layout.size
+&nbsp;import androidx.compose.foundation.layout.width
+&nbsp;import androidx.compose.material.icons.Icons
+&nbsp;import androidx.compose.material.icons.filled.Close
+&nbsp;import androidx.compose.material.icons.filled.Face
+&nbsp;import androidx.compose.material3.Button
+&nbsp;import androidx.compose.material3.Icon
+&nbsp;import androidx.compose.material3.Text
+&nbsp;import androidx.compose.runtime.Composable
+&nbsp;import androidx.compose.runtime.collectAsState
+&nbsp;import androidx.compose.runtime.key
+&nbsp;import androidx.compose.ui.Alignment
+&nbsp;import androidx.compose.ui.Modifier
+&nbsp;import androidx.compose.ui.graphics.Color
+&nbsp;import androidx.compose.ui.unit.Dp
+&nbsp;import androidx.compose.ui.unit.dp
+&nbsp;import androidx.compose.ui.unit.sp
+&nbsp;import nl.bluevoid.dojotictactoe.model.Board
+&nbsp;import nl.bluevoid.dojotictactoe.model.BoardCell
+&nbsp;import nl.bluevoid.dojotictactoe.model.CellState
+&nbsp;import nl.bluevoid.dojotictactoe.model.Game
+&nbsp;
+&nbsp;@Composable
+<b class="nc">&nbsp;fun GameView(game: Game) {</b>
+&nbsp;
+<b class="nc">&nbsp;    val board = game.boardFlow.collectAsState().value</b>
+&nbsp;
+<b class="nc">&nbsp;    val cellRows = board.boardFlow.collectAsState(emptyList()).value</b>
+<b class="nc">&nbsp;    val gameState = board.gameStateFlow.collectAsState(Board.GameState.Undecided).value</b>
+<b class="nc">&nbsp;    val count = board.moveCounterFlow.collectAsState(0).value</b>
+&nbsp;
+<b class="nc">&nbsp;    Column(</b>
+<b class="nc">&nbsp;        horizontalAlignment = Alignment.CenterHorizontally,</b>
+<b class="nc">&nbsp;        verticalArrangement = Arrangement.spacedBy(20.dp),</b>
+<b class="nc">&nbsp;        modifier = Modifier.fillMaxWidth()) {</b>
+&nbsp;
+<b class="nc">&nbsp;        Text(&quot;Tic-tac-toe&quot;, fontSize = 30.sp)</b>
+&nbsp;
+<b class="nc">&nbsp;        BoxWithConstraints {</b>
+<b class="nc">&nbsp;            Board(count, cellRows, this.maxWidth)</b>
+&nbsp;        }
+<b class="nc">&nbsp;        val stateText = when (gameState) {</b>
+<b class="nc">&nbsp;            Board.GameState.Undecided -&gt; &quot;&quot;</b>
+<b class="nc">&nbsp;            Board.GameState.WinCircle -&gt; &quot;Circle wins!&quot;</b>
+<b class="nc">&nbsp;            Board.GameState.WinCross -&gt; &quot;Cross wins!&quot;</b>
+<b class="nc">&nbsp;            Board.GameState.Draw -&gt; &quot;It&#39;s a draw!&quot;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Text(stateText, fontSize = 30.sp)</b>
+&nbsp;
+<b class="nc">&nbsp;        if (gameState != Board.GameState.Undecided) {</b>
+<b class="nc">&nbsp;            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {</b>
+<b class="nc">&nbsp;                repeat(3) {</b>
+<b class="nc">&nbsp;                    val size = 3 + it</b>
+<b class="nc">&nbsp;                    Button({ game.restart(size) }) {</b>
+<b class="nc">&nbsp;                        Text(&quot;Start $size&quot;)</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;@Composable
+<b class="nc">&nbsp;private fun Board(count: Int, cellRows: List&lt;List&lt;BoardCell&gt;&gt;, maxWidth: Dp) {</b>
+<b class="nc">&nbsp;    Column() {</b>
+<b class="nc">&nbsp;        val cells = cellRows.size</b>
+<b class="nc">&nbsp;        val cellSize = (maxWidth - 40.dp) / cells</b>
+<b class="nc">&nbsp;        key(count) {</b>
+<b class="nc">&nbsp;            cellRows.forEachIndexed { index, row -&gt;</b>
+<b class="nc">&nbsp;                if (index &gt; 0) Box(modifier = Modifier</b>
+<b class="nc">&nbsp;                    .height(1.dp)</b>
+<b class="nc">&nbsp;                    .width(cellSize * row.size)</b>
+<b class="nc">&nbsp;                    .background(Color.Black))</b>
+<b class="nc">&nbsp;                Row() {</b>
+<b class="nc">&nbsp;                    row.forEachIndexed { index, cell -&gt;</b>
+<b class="nc">&nbsp;                        Cell(cell, index, cellSize)</b>
+<b class="nc">&nbsp;                    }</b>
+<b class="nc">&nbsp;                }</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;
+&nbsp;@Composable
+<b class="nc">&nbsp;private fun Cell(cell: BoardCell, index: Int, cellSize: Dp) {</b>
+<b class="nc">&nbsp;    val icon = when (cell.state) {</b>
+<b class="nc">&nbsp;        CellState.Cross -&gt; Icons.Filled.Close</b>
+<b class="nc">&nbsp;        CellState.Circle -&gt; Icons.Filled.Face</b>
+<b class="nc">&nbsp;        CellState.Empty -&gt; null</b>
+&nbsp;    }
+<b class="nc">&nbsp;    if (index &gt; 0) Box(modifier = Modifier</b>
+<b class="nc">&nbsp;        .width(1.dp)</b>
+<b class="nc">&nbsp;        .height(cellSize)</b>
+<b class="nc">&nbsp;        .background(Color.Black))</b>
+<b class="nc">&nbsp;    if (icon == null) {</b>
+<b class="nc">&nbsp;        Box(modifier = Modifier.size(cellSize))</b>
+<b class="nc">&nbsp;    } else {</b>
+<b class="nc">&nbsp;        Icon(</b>
+<b class="nc">&nbsp;            imageVector = icon,</b>
+<b class="nc">&nbsp;            contentDescription = &quot;cell&quot;,</b>
+<b class="nc">&nbsp;            tint = Color.Magenta,</b>
+<b class="nc">&nbsp;            modifier = Modifier.size(cellSize)</b>
+&nbsp;            // .clickable { hexViewModel.soundLevelFlow.value = if (soundLevel == 0f) 1f else 0f }
+&nbsp;        )
+&nbsp;    }
+<b class="nc">&nbsp;}</b>
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-01-29 10:06</div>
+</div>
+</body>
+</html>
