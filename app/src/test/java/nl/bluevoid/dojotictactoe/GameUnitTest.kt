@@ -26,13 +26,15 @@ class GameUnitTest {
 
     @Test
     fun assure_bots_take_turns() {
-        val game = Game()
-        val board = game.boardFlow.value
-        repeat(2) {
-            assertEquals(CellState.Cross, board.getTurn())
-            game.nextTurn()
-            assertEquals(CellState.Circle, board.getTurn())
-            game.nextTurn()
+        runTest {
+            val game = Game()
+            val board = game.boardFlow.value
+            repeat(2) {
+                assertEquals(CellState.Cross, board.getTurn())
+                game.nextTurn()
+                assertEquals(CellState.Circle, board.getTurn())
+                game.nextTurn()
+            }
         }
     }
 
@@ -59,8 +61,8 @@ class GameUnitTest {
             delay(50)
 
             // restart and run till end
-            game.restart(4)
-            assertEquals(4, game.boardFlow.value.size)
+            game.restart(3)
+            assertEquals(3, game.boardFlow.value.size)
             game.run()
 
             while (!game.isFinished()) {

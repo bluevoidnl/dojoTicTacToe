@@ -127,7 +127,7 @@ class BoardUnitTest {
     }
 
     @Test
-    fun assure_pat_situation_is_determined() {
+    fun assure_draw_situation_is_determined() {
         val board = Board()
 
         // fill with no win pattern
@@ -147,5 +147,20 @@ class BoardUnitTest {
         println(board)
 
         assertEquals(Board.GameState.Draw, board.gameStateFlow.value)
+    }
+
+    @Test
+    fun assure_board_copies_are_independent() {
+        val board = Board()
+
+        val board2=board.getMutableCopy()
+        val board3 = board.getMutableCopy()
+
+        board2.setCell(0,0, CellState.Cross)
+        board2.setCell(1,1, CellState.Circle)
+
+        assertEquals(9, board.getEmptyCells().size)
+        assertEquals(9, board3.getEmptyCells().size)
+
     }
 }

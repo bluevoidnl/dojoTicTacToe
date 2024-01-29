@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 class Game(val stepTime: Long = 600L) : ViewModel() {
 
@@ -18,15 +19,20 @@ class Game(val stepTime: Long = 600L) : ViewModel() {
         gameJob?.cancel()
         gameJob = viewModelScope.launch {
             while (boardFlow.value.gameStateFlow.value == Board.GameState.Undecided) {
-                delay(stepTime)
+                val start = Clock.System.now()
                 nextTurn()
+
+                // keep at least x time between moves
+                val duration = Clock.System.now().minus(start).inWholeMilliseconds
+                if (duration < stepTime)
+                    delay(stepTime - duration)
             }
         }
     }
 
     fun isFinished() = boardFlow.value.gameStateFlow.value != Board.GameState.Undecided
 
-    fun nextTurn() {
+    suspend fun nextTurn() {
         val colorToPlay = boardFlow.value.getTurn()
         players.first { it.color == colorToPlay }.doMove(boardFlow.value)
     }

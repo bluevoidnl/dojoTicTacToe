@@ -18,12 +18,14 @@ class PlayerUnitTest {
 
     @Test
     fun assure_bot_plays_allowed_move() {
-        val board = Board()
-        val p1 = Bot(CellState.Cross)
-        p1.doMove(board)
+        runTest {
+            val board = Board()
+            val p1 = Bot(CellState.Cross)
+            p1.doMove(board)
 
-        assertEquals(1, board.getNrMovesDone(p1.color))
-        assertEquals(0, board.getNrMovesDone(CellState.Circle))
+            assertEquals(1, board.getNrMovesDone(p1.color))
+            assertEquals(0, board.getNrMovesDone(CellState.Circle))
+        }
     }
     
     @Test

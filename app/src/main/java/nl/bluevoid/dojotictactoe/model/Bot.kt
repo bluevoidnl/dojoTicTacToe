@@ -1,62 +1,85 @@
 package nl.bluevoid.dojotictactoe.model
 
-import androidx.annotation.WorkerThread
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class Bot(color: CellState) : Player(color) {
 
-    @WorkerThread
-    override fun doMove(board: Board) {
+    override suspend fun doMove(board: Board) {
         movesChecked = 0
-        val moveCell = if (board.getEmptyCells().size == board.size*board.size)
-            board.getEmptyCells().randomOrNull()
-        else findBestMove(board.getMutableCopy(), color == CellState.Cross)
-        println("RRR color $color moves, checked $movesChecked")
-        if (moveCell == null) {
-            throw IllegalStateException("can not do move, no empty cells")
+
+        val moveCell = if (board.getEmptyCells().size == board.size * board.size) {
+            //
+            board.getEmptyCells().random()
         } else {
-            board.setCell(moveCell.x, moveCell.y, color)
+            findBestMoveParallel(board, color == CellState.Cross)
         }
+        println("RRR color $color moves, checked $movesChecked")
+
+        board.setCell(moveCell.x, moveCell.y, color)
     }
 
-    private fun findBestMove(board: Board, isMaximizing: Boolean): BoardCell {
+    var movesChecked = 0
+
+    private suspend fun findBestMoveParallel(board: Board, isMaximizing: Boolean): BoardCell = coroutineScope {
         var bestMove = BoardCell(-1, -1)
         var bestScore = if (isMaximizing) Int.MIN_VALUE else Int.MAX_VALUE
+
+        // Create a list to hold all the deferred results
+        val deferredResults = mutableListOf<Deferred<Pair<BoardCell, Int>>>()
 
         for (cell in board.getEmptyCells()) {
             val x = cell.x
             val y = cell.y
 
-            movesChecked++
-            // Make the move
-            board.setCell(x, y, if (isMaximizing) CellState.Cross else CellState.Circle)
+            // Launch a coroutine for each move
+            val deferred = async(Dispatchers.Default) {
+                //println("RRR start check cell $cell")
+                val boardCopy = board.getMutableCopy()
+                movesChecked++
+                // Make the move
+                boardCopy.setCell(x, y, if (isMaximizing) CellState.Cross else CellState.Circle)
 
-            // Compute evaluation function for this move
-            val score = minimax(board, !isMaximizing, 9)
+                // Compute the evaluation function for this move
+                val score = minimax(boardCopy, !isMaximizing, 20)
 
-            // Undo the move
-            board.undoMove(x, y)
+                // Undo the move
+                boardCopy.undoMove(x, y)
+               // println("RRR end check cell $cell")
+                // Return the cell and its score
+                Pair(cell, score)
+            }
 
-            // If the current move is better than the best, then update best
+            deferredResults.add(deferred)
+        }
+
+        // Await all coroutines and process the results
+        deferredResults.forEach { deferred ->
+            val (cell, score) = deferred.await()
+
+            // If the current move is better than the best, then update the best
             if (isMaximizing && score > bestScore || !isMaximizing && score < bestScore) {
                 bestScore = score
                 bestMove = cell
             }
         }
-        return bestMove
+
+        bestMove
     }
 
-    var movesChecked = 0
 
-    private fun minimax(board: Board, isMaximizing: Boolean, depth:Int): Int {
+    private fun minimax(board: Board, isMaximizing: Boolean, depth: Int): Int {
 
-        if(depth==0) return  if(isMaximizing) 10 else -10
+        if (depth == 0) return if (isMaximizing) 10 else -10
+
         val state = board.gameStateFlow.value
-        when (state) {
-            Board.GameState.WinCross -> return 10
-            Board.GameState.WinCircle -> return -10
-            Board.GameState.Draw -> return 0
+        return when (state) {
+            Board.GameState.WinCross -> 10
+            Board.GameState.WinCircle -> -10
+            Board.GameState.Draw -> 0
             else -> {
-
                 var bestScore = if (isMaximizing) Int.MIN_VALUE else Int.MAX_VALUE
 
                 for (cell in board.getEmptyCells()) {
@@ -68,14 +91,14 @@ class Bot(color: CellState) : Player(color) {
                     board.setCell(x, y, if (isMaximizing) CellState.Cross else CellState.Circle)
 
                     // Call minimax recursively and choose the maximum or minimum value
-                    val score = minimax(board, !isMaximizing, depth -1)
+                    val score = minimax(board, !isMaximizing, depth - 1)
 
                     // Undo the move
                     board.undoMove(x, y)
 
                     bestScore = if (isMaximizing) maxOf(bestScore, score) else minOf(bestScore, score)
                 }
-                return bestScore
+                bestScore
             }
         }
     }
