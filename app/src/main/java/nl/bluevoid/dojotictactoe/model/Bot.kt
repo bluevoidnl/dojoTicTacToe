@@ -11,7 +11,9 @@ class Bot(color: CellState) : Player(color) {
         movesChecked = 0
 
         val moveCell = if (board.getEmptyCells().size == board.size * board.size) {
-            //
+            // For the first move take a random cell for variation and less calculations
+            // This also shows that when playing bot to bot on 3x3 it does not matter how to start:
+            // it is always a draw.
             board.getEmptyCells().random()
         } else {
             findBestMoveParallel(board, color == CellState.Cross)
